@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="A simple QR Code Generator">
+    <meta name="author" content="Tejas">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;300;400;600;900&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <link rel="stylesheet" href="app.css">
+    <title>QR gen</title>
+</head>
+
+<body class="outfit-fonter">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        
+
+        const App = () => {
+            // Generate QR code based on the input
+
+            function genQrOnStart() {
+                const qrMage = document.getElementById('qrCodeImage');
+                QRCode.toDataURL("j secrjsgdunsvgdnhvsfwer", { errorCorrectionLevel: 'H' })
+                    .then((url) => {
+                        qrMage.src = url; // Set the QR code image URL
+                    })
+                    .catch((error) => {
+                        console.error("QR Code generation failed:", error);
+                    });
+            }
+
+
+            function generateQrCode() {
+                const input = document.getElementById('linkInput').value; // Get the input value
+                const qrCodeImage = document.getElementById('qrCodeImage'); // Get the image element
+
+                if (input) {
+                    // Generate QR code only if input is not empty
+                    QRCode.toDataURL(input, { errorCorrectionLevel: 'H' })
+                        .then((url) => {
+                            qrCodeImage.src = url; // Set the QR code image URL
+                        })
+                        .catch((error) => {
+                            console.error("QR Code generation failed:", error);
+                        });
+                } else {
+                    qrCodeImage.src = ""; // Clear the QR code if input is empty
+                }
+            }
+
+            // Download the QR code image in the selected format
+            function downloadQrCode() {
+                const input = document.getElementById('linkInput').value; // Get the input value
+                const format = document.getElementById('format-select').value; // Get the selected format
+                const qrCodeImage = document.getElementById('qrCodeImage'); // Get the image element
+
+                if (input) {
+                    // Generate QR code in the selected format
+                    QRCode.toDataURL(input, { errorCorrectionLevel: 'H', type: format.toLowerCase() })
+                        .then((url) => {
+                            const link = document.createElement('a'); // Create a link element
+                            link.href = url; // Set the link href to the QR code image
+                            link.download = `qrcode.${format.toLowerCase()}`; // Set the file name
+                            link.click(); // Trigger the download
+                        })
+                        .catch((error) => {
+                            console.error("QR Code generation failed:", error);
+                        });
+                }
+            }
+
+            // Change the background gradient randomly when the RANDOMIZE button is clicked
+            function randomizeBackground() {
+                const colors = [
+                    ['#ff7e5f', '#feb47b'], // Sunset
+                    ['#6a11cb', '#2575fc'], // Purple-Blue
+                    ['#00c6ff', '#0072ff'], // Blue gradient
+                    ['#ff9a8b', '#ff6a88'], // Pink-Red
+                    ['#ffecd2', '#fcb69f'], // Light Peach
+                    ['#ff4b1f', '#ff9b00'], // Red-Orange
+                    ['#e96443', '#904e95'], // Purple-Orange
+                    ['#1e3c72', '#2a5298'], // Blue-Dark Blue
+                    ['#4ca1af', '#c4e0e5'], // Teal-Light Blue
+                    ['#ff512f', '#dd2476'], // Red-Pink
+                    ['#ffb347', '#ffcc33'], // Yellow-Orange
+                    ['#30cfd0', '#330867'], // Teal-Purple
+                    ['#d31027', '#ea5a44'], // Red-Coral
+                    ['#ff8a00', '#e52e71'], // Orange-Pink
+                    ['#00c6ff', '#1e52f0'], // Sky-Blue to Deep Blue
+                    ['#ffb3b3', '#ff6666'], // Soft Pink-Red
+                    ['#00ff00', '#32cd32'], // Neon Green
+                    ['#9c27b0', '#4a148c'], // Purple to Deep Purple
+                    ['#a80077', '#66a6ff'], // Pink-Blue
+                    ['#ff7e5f', '#feb47b'], // Peach Sunset
+                    ['#f7797d', '#F8B88B'], // Rose-Goldish Pink
+                    ['#00c9ff', '#92fe9d'], // Light Blue to Green
+                    ['#e100ff', '#6e00ff'], // Neon Purple
+                    ['#f85032', '#e73827'], // Fiery Red-Orange
+                    ['#56ccf2', '#6e7fbb'], // Light Blue-Purple
+                    ['#f93c3c', '#e0a7e7'], // Red-Purple
+                    ['#00bcd4', '#8e44ad'] // Turquoise-Purple
+                ];
+
+                // Pick a random gradient from the array
+                const randomGradient = colors[Math.floor(Math.random() * colors.length)];
+                document.body.style.background = `linear-gradient(to right, ${randomGradient[0]}, ${randomGradient[1]})`;
+            }
+
+            setTimeout(() => genQrOnStart(), 0);
+
+            return (
+                <>
+                    <div class="heading-div qr-ele shimmer"><h1>QR Gen</h1></div>
+
+                    <div class="qr-conatiner">
+                        <img id="qrCodeImage" class="shimmer" src="" />
+                    </div>
+
+                    <form action="">
+                        <input
+                            type="text"
+                            id="linkInput"
+                            placeholder="Enter link"
+                            onInput={generateQrCode}
+                            class="shimmer"
+                        />
+                        <div class="format-background">
+                            <select name="format" id="format-select">
+                                <option value="JPEG">JPEG</option>
+                                <option value="PNG">PNG</option>
+                                <option value="SVG">SVG</option>
+                            </select>
+                            <button class="shimmer" id='rando' type="button" onClick={randomizeBackground}>RANDOMIZE</button> {/* Randomize button kept */}
+                        </div>
+                        <button class="shimmer" id="downlo" type="button" onClick={downloadQrCode}>DOWNLOAD</button> {/* Download button */}
+                    </form>
+                </>
+            )
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+</body>
+
+</html>
